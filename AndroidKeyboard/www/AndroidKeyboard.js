@@ -4,21 +4,29 @@ var exec = require('cordova/exec');
 //     exec(success, error, 'AndroidKeyboard', 'coolMethod', [arg0]);
 // };
 
+let classInJava = 'AndroidKeyboard';
 let AndroidKeyboard = {
-    coolMethod: function (arg0, success, error) {
-        /* */
-        exec(success, error, 'AndroidKeyboard', 'coolMethod', [arg0]);
-    },
-
     hide: function () {
-        exec(null, null, 'AndroidKeyboard', 'hide', []);
+        exec(null, null, classInJava, 'hide', []);
     },
 
     show: function () {
-        exec(null, null, 'AndroidKeyboard', 'show', []);
+        exec(null, null, classInJava, 'show', []);
     },
-    getKeyboardHeight: function (success) {
-        exec(success, null, 'AndroidKeyboard', 'getKeyboardHeight', []);
+    getKeyboardHeight1: function (success) {
+        exec(success, null, classInJava, 'getKeyboardHeight1', []);
+    },
+    getKeyboardHeight2: function (success) {
+        exec(success, null, classInJava, 'getKeyboardHeight2', []);
+    },
+    showSoftKeyboard: function (success) {
+        exec(success, null, classInJava, 'showSoftKeyboard', []);
+    },
+
+    overlaysWebView: function (isFullScreen) {
+        if(typeof isFullScreen === 'boolean'){
+            exec(null, null, classInJava, 'showSoftKeyboard', [isFullScreen]);
+        }
     }
 }
 module.exports = AndroidKeyboard;

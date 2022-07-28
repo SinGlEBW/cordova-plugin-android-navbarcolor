@@ -11,6 +11,9 @@
       </feature>
     </config-file>
     <config-file parent="/*" target="AndroidManifest.xml"></config-file>
+
     <source-file src="src/android/AndroidKeyboard.java" target-dir="src/ru/cordova/android/keyboard/AndroidKeyboard" />
+    <source-file src="src/android/KeyboardHeightProvider.java" target-dir="src/ru/cordova/android/keyboard/AndroidKeyboard" />
+    
   </platform>
 </plugin>

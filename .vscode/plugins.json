@@ -1,1 +1,1 @@
-{"plugins":["cordova-plugin-android-keyboard"]}
+{"plugins":["cordova-plugin-android-keyboard","cordova-plugin-keyboard"]}
