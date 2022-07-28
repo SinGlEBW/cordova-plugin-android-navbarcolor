@@ -7,6 +7,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+
+import android.app.Activity;
+import android.view.Window;
+import android.view.ViewTreeObserver;
+import android.graphics.Rect;
+import android.inputmethodservice.Keyboard;
+
+
+// import android.graphics.Color;
+import android.os.Build;
+import android.view.View;
+
+import android.view.WindowManager;
+
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaArgs;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.LOG;
+import org.apache.cordova.PluginResult;
+import org.json.JSONException;
+import java.util.Arrays;
+
+
 /**
  * This class echoes a string called from JavaScript.
  */
@@ -21,6 +47,12 @@ public class AndroidKeyboard extends CordovaPlugin {
      */
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        // Просто проверить что тут находиться
+        final Activity activity = this.cordova.getActivity();
+        final Window window = activity.getWindow();
+       
+
+
         if (action.equals("coolMethod")) {
             this.coolMethod(args, callbackContext);
             return true;
@@ -28,17 +60,22 @@ public class AndroidKeyboard extends CordovaPlugin {
 
         if (action.equals("show")) {
             /* callbackContext Если хотим передавать значения из java в js */
-            this.show(callbackContext);
+            this.show(window, callbackContext);
             return true;
         }
 
         if (action.equals("hide")) {
-            this.hide(callbackContext);
+            this.hide(window, callbackContext);
             return true;
         }
 
         if (action.equals("getKeyboardHeight")) {
-            this.getKeyboardHeight(callbackContext);
+            this.getKeyboardHeight(window, callbackContext);
+            return true;
+        }
+
+        if (action.equals("showSoftKeyboard")) {
+            this.showSoftKeyboard(window, callbackContext);
             return true;
         }
 
@@ -48,11 +85,11 @@ public class AndroidKeyboard extends CordovaPlugin {
     /* Описываемые методы */
     private void coolMethod(JSONArray args, CallbackContext callbackContext) {
 
-        if (message != null && message.length() > 0) {
-            callbackContext.success(message);
-        } else {
-            callbackContext.error("Expected one non-empty string argument.");
-        }
+        // if (message != null && message.length() > 0) {
+        //     callbackContext.success(message);
+        // } else {
+        //     callbackContext.error("Expected one non-empty string argument.");
+        // }
         /*
          * Получение аргументов. В зависимости от передаваемого типа выбираем что хотим
          * тут получать
@@ -62,13 +99,8 @@ public class AndroidKeyboard extends CordovaPlugin {
          */
     }
 
-    private void show(CallbackContext callbackContext) {
-        // if (message != null && message.length() > 0) {
-        // callbackContext.success(message);//
-        // } else {
-        // callbackContext.error("Expected one non-empty string argument.");
-        // }
-
+    private void show(Window window, CallbackContext callbackContext) {
+   
         this.cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -89,7 +121,7 @@ public class AndroidKeyboard extends CordovaPlugin {
         });
     }
 
-    private void hide(CallbackContext callbackContext) {
+    private void hide(Window window, CallbackContext callbackContext) {
         /* Можно попробовать через callbackContext предположительно передавать event */
         this.cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -112,9 +144,15 @@ public class AndroidKeyboard extends CordovaPlugin {
 
     }
 
-    public int getKeyboardHeight(CallbackContext callbackContext) {
-        final View rootview = this.getWindow().getDecorView();
-        linearChatLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+    public int getKeyboardHeight(Window window, CallbackContext callbackContext) {
+
+        final View rootview = window.getDecorView();
+        System.out.println(rootview.getMeasuredHeight());
+    /*
+        getViewTreeObserver() - метод возвращающий методы слушателей. 
+    */
+
+        rootview.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     public void onGlobalLayout() {
                         Rect r = new Rect();
@@ -131,5 +169,15 @@ public class AndroidKeyboard extends CordovaPlugin {
                     }
                 });
         callbackContext.success(heightOfKeyboard);
+    }
+
+    public void showSoftKeyboard(Window window, CallbackContext callbackContext) {
+
+        View view = window.getDecorView();
+        if (view.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 }

@@ -30,24 +30,31 @@
 
 
 
-    выходим на уровень выше из плагина и вводим: 
-      cordova plugin add AndroidKeyboard --link 
+    выходим на уровень выше из плагина и вводим: (cordova plugin add /путь/до/плагина/его_папка --link). Если находимся в корне проекта то путь можно опустить.
+      Пример:
+        cordova plugin add AndroidKeyboard --link 
     Далее скорей всего получим ошибку 
 
         Error during processing of action! Attempting to revert...
         Failed to install 'cordova-plugin-android-keyboard': Error: Uh oh!
         EPERM: operation not permitted, symlink '..\..\..\..\..\..\..\..\..\..\..\AndroidKeyboard\src\android\AndroidKeyboard.java
 
-    Связанно это с группировкой папок в самом vscode. Это БАГ. Так что нужно отдельно открыть cmd все vscode перейти в проект cordova где создавали плагин
-    предварительно удалив недоустановленный плагин platform/android/app/src/main/java и далее всю папку /ru/...
-    и ввести снова команду: cordova plugin add AndroidKeyboard --link
-
-
-    cordova plugin add /путь/до/плагина/ --link
+      То удаляем недоустановленный плагин platform/android/app/src/main/java и далее всю папку /ru/... 
+      и устанавливаем без ключа --link
     
+    после команды плагин создаётся в 2х местах. В корне проекта в папке plugins и по пути platform/android/app/src/main/java
 
   3. Проверка работы плагина для начала билдим проект
     cordova build
+
+  4. т.к. мы дорабатываем плагин, в своей изначально созданной папке с плагином каждый раз когда нужно нам принять изменения 
+    нам нужно предварительно удалять плагин введя команду cordova plugin rm (id установленного плагина) и по новой устанавливать
+    cordova plugin add AndroidKeyboard (Не забываем про баг с установкой через терминал vscode)
+      Пример:
+        cordova plugin rm cordova-plugin-android-keyboard
+    
+    Н
+
 
 */
 
