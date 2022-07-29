@@ -4,16 +4,18 @@
   <js-module name="AndroidKeyboard" src="www/AndroidKeyboard.js">
     <clobbers target="cordova.plugins.AndroidKeyboard" />
   </js-module>
+
   <platform name="android">
+    <config-file parent="/*" target="AndroidManifest.xml"></config-file>
+
     <config-file parent="/*" target="res/xml/config.xml">
       <feature name="AndroidKeyboard">
         <param name="android-package" value="ru.cordova.android.keyboard.AndroidKeyboard" />
+        <param name="onload" value="true" />
       </feature>
     </config-file>
-    <config-file parent="/*" target="AndroidManifest.xml"></config-file>
 
     <source-file src="src/android/AndroidKeyboard.java" target-dir="src/ru/cordova/android/keyboard/AndroidKeyboard" />
-    <source-file src="src/android/KeyboardHeightProvider.java" target-dir="src/ru/cordova/android/keyboard/AndroidKeyboard" />
     
   </platform>
 </plugin>

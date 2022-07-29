@@ -22,8 +22,8 @@
       "android"
     ],
     "plugins": {
-      "cordova-plugin-android-keyboard": {},
-      "cordova-plugin-keyboard": {}
+      "cordova-plugin-keyboard": {},
+      "cordova-plugin-android-keyboard": {}
     }
   }
 }
