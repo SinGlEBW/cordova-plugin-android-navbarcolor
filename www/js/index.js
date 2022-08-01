@@ -26,4 +26,13 @@ function onDeviceReady() {
 
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
     document.getElementById('deviceready').classList.add('ready');
+    if(window.cordova){ console.dir('overlaysWebView: overlaysWebView');
+        StatusBar.overlaysWebView(true);
+
+    }
+
+    if(cordova.plugins.AndroidKeyboard){
+        console.dir(`Высота клавиатуры: ${cordova.plugins.AndroidKeyboard.height}`);
+    }
+
 }

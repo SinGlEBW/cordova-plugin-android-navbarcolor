@@ -3,15 +3,16 @@ package ru.cordova.android.keyboard;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
+import org.apache.cordova.CallbackContext;
+
 
 import java.util.function.Function;
 
-import org.apache.cordova.CallbackContext;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-// import org.json.JSONObject;
-
+import org.json.JSONObject;
 
 import android.app.Activity;
 
@@ -57,66 +58,55 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
 
 import android.view.WindowInsets;
+// import com.google.gson.Gson;
 
+class Person{
+     
+    String name;    // имя
+    int age;        // возраст
 
-
-
-
-
-
-
+    Person(){
+        name = "Undefined";
+        age = 18;
+    }
+}
 
 public class AndroidKeyboard extends CordovaPlugin {
     /* Constructor */
-    public AndroidKeyboard() {
-
-        
-    }
+    public AndroidKeyboard() {   };
     private int density = 0;
+    private int heightKeyboard = 0;
+    private int previousHeightDiff = 0;
+
+    private boolean isWatchEvent = false;
+    private boolean isInitHeight = false;
+
+    private CallbackContext callbackContext;
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        
-        //calculate density-independent pixels (dp)
-        //http://developer.android.com/guide/practices/screens_support.html
-        DisplayMetrics dm = new DisplayMetrics();
-        cordova.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        density = (int)(dm.density);
-        
-        final CordovaWebView appView = webView;
-        
+
+  
+
+        this.initKeyboardEvent();
+
+
+        // PluginResult dataResult = new PluginResult(PluginResult.Status.OK, "Тест текст");
+        // dataResult.setKeepCallback(true);
+        // cordova.setActivityResultCallback(this);
+
+
         //http://stackoverflow.com/a/4737265/1091751 detect if keyboard is showing
-        final View rootView = cordova.getActivity().getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
-        OnGlobalLayoutListener list = new OnGlobalLayoutListener() {
-            int previousHeightDiff = 0;
-            @Override
-            public void onGlobalLayout() {
-            	Rect r = new Rect();
-                //r will be populated with the coordinates of your view that area still visible.
-                rootView.getWindowVisibleDisplayFrame(r);
+    
 
-                int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
-                Log.d("initialize heightDiff", "Size: " + heightDiff);
-                if (heightDiff > 200 && heightDiff != previousHeightDiff) { // if more than 200 pixels, its probably a keyboard...
-                    int keyboardHeight = (int)(heightDiff / density);
-                    Log.d("initialize keyboardHeight", "Size: " + keyboardHeight);
-
-                    appView.sendJavascript("cordova.plugins.AndroidKeyboard.isVisible = true");
-                    // appView.sendJavascript("cordova.plugins.AndroidKeyboard.on('showkeyboard', ("+ Integer.toString(keyboardHeight)+") => {});");                  
-                    appView.sendJavascript("cordova.fireWindowEvent('showkeyboard', { 'keyboardHeight':" + Integer.toString(keyboardHeight)+"});");                   
-                }
-                else if ( heightDiff != previousHeightDiff && ( previousHeightDiff - heightDiff ) > 200 ){
-                    appView.sendJavascript("cordova.plugins.AndroidKeyboard.isVisible = false");
-                    appView.sendJavascript("cordova.fireWindowEvent('hidekeyboard')");
-                }
-                previousHeightDiff = heightDiff;
-               
-             }
-        }; 
         
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(list);
+
+    // appView.sendJavascript("cordova.plugins.AndroidKeyboard.initHeight = (cb) => cb(" + Integer.toString(keyboardHeight) + ");" );
+
     }
-	
+
+    
+
 
     /*
      * через execute предполагаем что будет вызываться через js и вызываем методы в
@@ -124,7 +114,7 @@ public class AndroidKeyboard extends CordovaPlugin {
      */
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        
+        this.callbackContext = callbackContext;
         /* Получение аргументов. В зависимости от передаваемого типа выбираем что хотим
             тут получать
             int args1 = args.getInt(0);
@@ -138,7 +128,23 @@ public class AndroidKeyboard extends CordovaPlugin {
         final Window window = activity.getWindow();
         View view = window.getDecorView();
       
-     
+
+        if(action.equals("on")){
+            isWatchEvent = true;
+            callbackContext.success();
+            return true;
+        }
+
+        if(action.equals("off")){
+            isWatchEvent = false;
+            callbackContext.success();
+            return true;
+        }
+
+        if(action.equals("coolMethod")){
+            Log.d("ТЕСТ: ", "Запуск coolMethod");
+            return true;
+        }
 
         if (action.equals("show")) {
             imm.showSoftInput(view, 0);
@@ -153,76 +159,45 @@ public class AndroidKeyboard extends CordovaPlugin {
         }
 
         if (action.equals("getKeyboardHeight")) {
-
-            Log.d("getMeasuredHeight", "Size: " + view.getMeasuredHeight());
-            /*
-                getViewTreeObserver() - метод возвращающий методы принимающие слушатели. 
-                Слушатели для данных методов создаются через new ViewTreeObserver.слушатель
-            */
-        
-            view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                public void onGlobalLayout() {
-                    Rect r = new Rect();
-                    view.getWindowVisibleDisplayFrame(r);
-                    int screenHeight = view.getRootView().getHeight();
-                    
-                    // System.out.println(args.get(0));
-                    int heightOfKeyboard = screenHeight - (r.bottom - r.top);//calculate density-independent pixels (dp)
-                  
-
-                    Log.d("Keyboard Size screenHeight", "Size: " + screenHeight);
-                    Log.d("Keyboard Size (r.bottom - r.top)", "Size: " + (r.bottom - r.top));
-                    Log.d("Keyboard Size screenHeight - (r.bottom - r.top)", "Size: " + heightOfKeyboard);
-                    int keyboardHeight = (int)(heightOfKeyboard / density);
-                    Log.d("Keyboard Size keyboardHeight - (r.bottom - r.top)", "Size: " + keyboardHeight);
-                    
-                    callbackContext.success(keyboardHeight);
-             
-
-
-
-                }
-            });
-
-            return true;
-
-        }
-
-        if (action.equals("fullScreen")) {
-            boolean isFullScreen = args.getBoolean(0);
-            boolean isLightNavigation = args.getBoolean(1);
-            WindowCompat.setDecorFitsSystemWindows(window, isFullScreen);
-            WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(view);
-            if (windowInsetsController == null) {
-                return true;
-            }
-
-            windowInsetsController.setAppearanceLightNavigationBars(isLightNavigation);
-            callbackContext.success();
+            callbackContext.success(heightKeyboard);
             return true;
         }
 
-        if (action.equals("showSoftKeyboard")) {
+        // if (action.equals("fullScreen")) {
+        //     boolean isFullScreen = args.getBoolean(0);
+        //     boolean isLightNavigation = args.getBoolean(1);
+        //     WindowCompat.setDecorFitsSystemWindows(window, isFullScreen);
+        //     WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(view);
+        //     if (windowInsetsController == null) {
+        //         return true;
+        //     }
 
-            if (view.requestFocus()) {
-                callbackContext.success();
-                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        //     windowInsetsController.setAppearanceLightNavigationBars(isLightNavigation);
+        //     callbackContext.success();
+        //     return true;
+        // }
+
+        // if (action.equals("showSoftKeyboard")) {
+
+        //     if (view.requestFocus()) {
+        //         callbackContext.success();
+        //         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     
-            }
+        //     }
     
    
-            ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
-                boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
-                int imeHeight1 = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
-                Log.d("Keyboard Size imeHeight1", "Size: " + imeHeight1);
-                return insets;
-            });
+        //     ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+        //         boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+        //         int imeHeight1 = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+        //         Log.d("Keyboard Size imeHeight1", "Size: " + imeHeight1);
+        //         return insets;
+        //     });
 
 
 
 
-            return true;
-        }
+        //     return true;
+        // }
     
 
      
@@ -231,7 +206,83 @@ public class AndroidKeyboard extends CordovaPlugin {
 
     }
 
+    public void watchHeight(int heightDiff, int keyboardHeight){
+        final CordovaWebView appView = this.webView;
 
+
+        if(heightDiff > 200){
+            if(!isInitHeight){
+                heightKeyboard = keyboardHeight;
+                isInitHeight = true;
+            }
+
+            
+            if (heightDiff != previousHeightDiff) {
+                appView.sendJavascript("cordova.plugins.AndroidKeyboard.isVisible = true");
+                // appView.sendJavascript("cordova.plugins.AndroidKeyboard.on('showkeyboard', ("+ Integer.toString(keyboardHeight)+") => {});");                  
+                appView.sendJavascript("cordova.fireWindowEvent('showkeyboard', { 'keyboardHeight':" + Integer.toString(keyboardHeight)+"});");                   
+            }
+            else 
+            if ( heightDiff != previousHeightDiff && ( previousHeightDiff - heightDiff ) < 200 ){
+                Log.d("initialize keyboardHeight", "Size: " + keyboardHeight);
+                appView.sendJavascript("cordova.plugins.AndroidKeyboard.isVisible = false");
+                appView.sendJavascript("cordova.fireWindowEvent('hidekeyboard')");
+
+            }
+            
+            previousHeightDiff = heightDiff;
+        
+        }
+
+        if(isWatchEvent){
+            JSONObject payloadEvent = new JSONObject();
+            // TODO: Написать логику
+            if(heightDiff != previousHeightDiff){
+                payloadEvent.put("isShow", true);
+                // payloadEvent.put("height", launchDetails.second);
+
+            }
+            if(heightDiff != previousHeightDiff){
+                payloadEvent.put("isShow", false);
+            }
+
+        
+            
+            
+
+            this.callbackContext.success('key');
+            
+        }
+    }
+
+
+    public void initKeyboardEvent(){
+    
+        DisplayMetrics dm = new DisplayMetrics();
+        this.cordova.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        density = (int)(dm.density);
+        AndroidKeyboard _this = this;
+
+        final View rootView = this.cordova.getActivity().getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
+
+        OnGlobalLayoutListener listener = new OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+            	Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+
+                int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
+                int keyboardHeight = (int)(heightDiff / density);
+                
+                _this.watchHeight(heightDiff, keyboardHeight);
+              
+            }
+        }; 
+        
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
+
+    }
 }
 
 
@@ -412,3 +463,76 @@ public class AndroidKeyboard extends CordovaPlugin {
 	// 		observer.onKeyboardHeightChanged(height, orientation);
 	// 	}
 	// }
+
+
+
+          /*Запрос разрешений
+            cordova.requestPermission(CordovaPlugin plugin, int requestCode, String permission);
+            cordova.requestPermission(this, requestCode, READ); пример
+            public static final String READ = Manifest.permission.READ_CONTACTS;
+        */
+
+        //calculate density-independent pixels (dp)
+        //http://developer.android.com/guide/practices/screens_support.html
+        
+
+        // DisplayMetrics dm = new DisplayMetrics();
+        // cordova.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        // density = (int)(dm.density);
+        
+        // final CordovaWebView appView = webView;
+        // final View rootView = cordova.getActivity().getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
+       
+
+
+
+        // OnGlobalLayoutListener list = new OnGlobalLayoutListener() {
+        //     int previousHeightDiff = 0;
+           
+
+        //     @Override
+        //     public void onGlobalLayout() {
+        //     	Rect r = new Rect();
+        //         rootView.getWindowVisibleDisplayFrame(r);
+
+        //         int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
+        //         int keyboardHeight = (int)(heightDiff / density);
+
+        //         Log.d("initialize heightDiff", "Size: " + heightDiff);
+        //         Log.d("initialize keyboardHeight", "Size: " + keyboardHeight);
+
+        //         if(heightDiff > 200){
+
+        //             if(!isInitHeight){
+        //                 heightKeyboard = keyboardHeight;
+        //                 isInitHeight = true;
+        //             }
+    
+        //             if (heightDiff != previousHeightDiff) {
+                     
+    
+        //                 appView.sendJavascript("cordova.plugins.AndroidKeyboard.isVisible = true");
+        //                 // appView.sendJavascript("cordova.plugins.AndroidKeyboard.on('showkeyboard', ("+ Integer.toString(keyboardHeight)+") => {});");                  
+        //                 appView.sendJavascript("cordova.fireWindowEvent('showkeyboard', { 'keyboardHeight':" + Integer.toString(keyboardHeight)+"});");                   
+        //             }
+        //             else if ( heightDiff != previousHeightDiff && ( previousHeightDiff - heightDiff ) < 200 ){
+        //                 Log.d("initialize keyboardHeight", "Size: " + keyboardHeight);
+    
+        //                 appView.sendJavascript("cordova.plugins.AndroidKeyboard.isVisible = false");
+        //                 appView.sendJavascript("cordova.fireWindowEvent('hidekeyboard')");
+        //             }
+                    
+        //             previousHeightDiff = heightDiff;
+                
+        //         }
+
+
+               
+               
+        //     }
+        // }; 
+        
+
+
+        // rootView.getViewTreeObserver().addOnGlobalLayoutListener(list);
+
