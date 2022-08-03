@@ -32,7 +32,8 @@ function onDeviceReady() {
     }
 
     if(cordova.plugins.AndroidKeyboard){
-        console.dir(`Высота клавиатуры: ${cordova.plugins.AndroidKeyboard.height}`);
+        
+      
     }
 
 }

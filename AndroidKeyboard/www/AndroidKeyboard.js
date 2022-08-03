@@ -1,67 +1,38 @@
 var exec = require('cordova/exec');
-let channel = require('cordova/channel');
-console.dir(channel);
-// require('cordova/channel').onCordovaReady.subscribe(function() {
-
-//     exec(win, null, 'Plugin', 'method', []);
-
-//     function win(message) {
-    
-//     }
-// });
 
 
-
-// exports.coolMethod = function (arg0, success, error) {
-//     exec(success, error, 'AndroidKeyboard', 'coolMethod', [arg0]);
-// };
-
-// cordova.plugins.AndroidKeyboard.initHeight = ( (e) => console.dir(e) );
 
 let classInJava = 'AndroidKeyboard';
 let AndroidKeyboard = {
-    isVisible: false,
-    // initHeight: () => {},
-
-    hide: function () {
-        exec(null, null, classInJava, 'hide', []);
-    },
-
-    show: function () {
-        exec(null, null, classInJava, 'show', []);
-    },
-    getKeyboardHeight: function (cb) {
-        exec(cb, null, classInJava, 'getKeyboardHeight', []);
-    },
- 
-    // showSoftKeyboard: function (success) {
-    //     exec(success, null, classInJava, 'showSoftKeyboard', []);
+    
+    // hide: function () {
+    //     exec(null, null, classInJava, 'hide', []);
     // },
 
-    // fullScreen: function (isFullScreen, isLightNavigation) {
-    //     if(typeof isFullScreen === 'boolean'){
-    //         exec(null, null, classInJava, 'fullScreen', [isFullScreen, isLightNavigation]);
-    //     }
+    // show: function () {
+    //     exec(null, null, classInJava, 'show', []);
     // },
+
+    // getHeight: function (cb) {
+    //     exec(cb, null, classInJava, 'getHeight', []);
+    // },
+
     on: function(nameEvent, cbSuccess) {
-
-        let success = function(message) {
-            cbSuccess(message);
-        };
+        // let success = function(message) {   cbSuccess(message);  };
 
         if(nameEvent === 'keyboard'){
-            exec(success, null, classInJava, "on", []);
+            exec(cbSuccess, null, classInJava, "on", []);
         }
 
-    }
-   
-}
-
-
-const sendVoice = (params) => {
+    },
+    off: function(nameEvent){
+        if(nameEvent === 'keyboard'){
+            exec(null, null, classInJava, "off", []);
+        }
     
+    } 
 }
-exec(sendVoice, null, classInJava, "coolMethod", []);
 
 
 module.exports = AndroidKeyboard;
+
