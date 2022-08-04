@@ -5,7 +5,8 @@
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "keyboard": "cordova plugin rm cordova-plugin-android-keyboard && cordova plugin add AndroidKeyboard && cordova build",
+    "navbar": "cordova plugin rm cordova-plugin-android-navbarcolor && cordova plugin add AndroidNavBar && cordova build"
   },
   "keywords": [
     "ecosystem:cordova"
@@ -15,6 +16,7 @@
   "devDependencies": {
     "cordova-android": "^10.1.2",
     "cordova-plugin-android-keyboard": "file:AndroidKeyboard",
+    "cordova-plugin-android-navbarcolor": "file:AndroidNavBar",
     "cordova-plugin-statusbar": "^3.0.0"
   },
   "cordova": {
@@ -23,7 +25,8 @@
     ],
     "plugins": {
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-android-keyboard": {}
+      "cordova-plugin-android-keyboard": {},
+      "cordova-plugin-android-navbarcolor": {}
     }
   }
 }

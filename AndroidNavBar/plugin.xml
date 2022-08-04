@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-android-navbarcolor" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>AndroidNavBar</name>
+  <js-module name="AndroidNavBar" src="www/AndroidNavBar.js">
+    <clobbers target="cordova.plugins.AndroidNavBar" />
+  </js-module>
+  <platform name="android">
+    <config-file parent="/*" target="res/xml/config.xml">
+      <feature name="AndroidNavBar">
+        <param name="android-package" value="ru.cordova.android.navbarcolor.AndroidNavBar" />
+      </feature>
+    </config-file>
+    <config-file parent="/*" target="AndroidManifest.xml"></config-file>
+    <source-file src="src/android/AndroidNavBar.java" target-dir="src/ru/cordova/android/navbarcolor/AndroidNavBar" />
+  </platform>
+</plugin>

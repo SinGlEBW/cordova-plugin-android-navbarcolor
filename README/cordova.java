@@ -4,7 +4,7 @@
     Создать проект кордовы для тестирования плагинов. Создать папку CordovaProject и далее в ней открыть терминал и вводить команды:
     cordova create . cordova.tests.plugins TestPlugins
     cordova platforms add android
-       
+       cordova-plugin-navbar-color
   2. Создаём папку с плагином в корне проекта
     plugman create --name ИмяКлассаJava --plugin_id  ru.cordova.android.keyboard --plugin_version 1.0.0
 
