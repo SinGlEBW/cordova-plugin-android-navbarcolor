@@ -9,4 +9,12 @@
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <preference name="StatusBarBackgroundColor" value="#000000" />
+
+    <platform name="android">
+        <preference name="android-minSdkVersion" value="23" />
+        <preference name="android-targetSdkVersion" value="31" />
+        <preference name="android-compileSdkVersion" value="31" />
+        <preference name="android-buildToolsVersion" value="30.0.3" />
+        
+    </platform>
 </widget>

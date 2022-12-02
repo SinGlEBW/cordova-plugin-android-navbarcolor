@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-android-callkit" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>AndroidCallKit</name>
+    <js-module name="AndroidCallKit" src="www/AndroidCallKit.js">
+        <clobbers target="cordova.plugins.AndroidCallKit" />
+    </js-module>
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="AndroidCallKit">
+                <param name="android-package" value="ru.cordova.android.callkit.AndroidCallKit" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml"></config-file>
+        <source-file src="src/android/AndroidCallKit.java" target-dir="src/ru/cordova/android/callkit/AndroidCallKit" />
+    </platform>
+</plugin>

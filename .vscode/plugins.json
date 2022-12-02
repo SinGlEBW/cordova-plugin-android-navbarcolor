@@ -1,1 +1,1 @@
-{"plugins":["cordova-plugin-statusbar","cordova-plugin-android-keyboard"]}
+{"plugins":["cordova-plugin-statusbar","cordova-plugin-android-keyboard","cordova-plugin-android-navbarcolor","cordova-plugin-android-callkit","cordova-plugin-audiotoggle"]}

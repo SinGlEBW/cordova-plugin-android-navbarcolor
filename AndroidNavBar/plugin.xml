@@ -10,6 +10,7 @@
         <param name="android-package" value="ru.cordova.android.navbarcolor.AndroidNavBar" />
       </feature>
     </config-file>
+    
     <config-file parent="/*" target="AndroidManifest.xml"></config-file>
     <source-file src="src/android/AndroidNavBar.java" target-dir="src/ru/cordova/android/navbarcolor/AndroidNavBar" />
   </platform>

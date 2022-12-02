@@ -1,0 +1,25 @@
+{
+  "name": "cordova-plugin-android-callkit",
+  "version": "1.0.0",
+  "description": "",
+  "cordova": {
+    "id": "cordova-plugin-android-callkit",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SinGlEBW/cordova-plugin-android-callkit.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "SinGlEBW",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SinGlEBW/cordova-plugin-android-callkit/issues"
+  },
+  "homepage": "https://github.com/SinGlEBW/cordova-plugin-android-callkit#readme"
+}

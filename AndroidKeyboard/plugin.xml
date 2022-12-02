@@ -16,6 +16,6 @@
     </config-file>
 
     <source-file src="src/android/AndroidKeyboard.java" target-dir="src/ru/cordova/android/keyboard/AndroidKeyboard" />
-    
+ 
   </platform>
 </plugin>

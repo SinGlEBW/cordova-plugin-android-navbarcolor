@@ -52,10 +52,9 @@
     cordova plugin add AndroidKeyboard (Не забываем про баг с установкой через терминал vscode)
       Пример:
         cordova plugin rm cordova-plugin-android-keyboard
-    
-    Н
 
-
+    При использовании подготовленной строки в npm run CallKit (cordova plugin rm cordova-plugin-android-callkit && cordova plugin add AndroidCallKit && cordova build)
+    убедиться что плагин изначально установлен т.к. 1я команда не отрабатывает.
 */
 
 
